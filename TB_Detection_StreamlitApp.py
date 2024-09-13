@@ -6,7 +6,7 @@ import tensorflow as tf
 # Function to load the model from a local path
 @st.cache(allow_output_mutation=True)
 def load_custom_model():
-    model_path = 'model\TB_detection_model.keras' 
+    model_path = 'model/TB_detection_model.keras' 
     return tf.keras.models.load_model(model_path)
 
 # Load the model
