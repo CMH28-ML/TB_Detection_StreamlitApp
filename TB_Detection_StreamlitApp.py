@@ -50,9 +50,9 @@ MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
 uploaded_file = st.file_uploader('Upload a Chest X-ray Image', type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file is not None:
-    # Check file size
-    file_size = uploaded_file.seek(0, io.SEEK_END)  # Get file size in bytes
-    uploaded_file.seek(0)  # Reset file pointer to the beginning
+    # Get file size
+    file_size = uploaded_file.getvalue().__sizeof__()  # Get file size in bytes
+
     if file_size > MAX_FILE_SIZE_BYTES:
         st.error(f"File size exceeds the {MAX_FILE_SIZE_MB} MB limit. Please upload a smaller file.")
     else:
@@ -67,4 +67,3 @@ if uploaded_file is not None:
         if st.button('Predict'):
             prediction = predict(custom_model, processed_image)
             st.write(f'Prediction: {prediction}')
-
