@@ -34,7 +34,7 @@ def predict(model, image, threshold=0.5):
     if predictions.shape == (1, 1):  # Assuming the model returns a single probability output
         probability = predictions[0][0]
         st.write(f'Prediction Probability: {probability:.4f}')  # Display the probability
-        return 'TB Positive' if probability > threshold else 'Normal'
+        return 'TB Positive' if probability < threshold else 'Normal'
     else:
         return 'Error: Invalid model output shape.'
 
