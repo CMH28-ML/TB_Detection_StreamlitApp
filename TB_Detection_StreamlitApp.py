@@ -23,7 +23,7 @@ def preprocess_image(image, target_size=(150, 150)):
     return image_array
 
 # Function to make predictions using the custom model
-def predict(model, image, threshold=0.5):
+def predict(model, image, threshold=0.475):
     """Make a prediction using the model and return 'TB Positive' or 'Normal' based on the threshold."""
     predictions = model.predict(image)
 
