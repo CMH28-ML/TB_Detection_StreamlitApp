@@ -26,10 +26,12 @@ def preprocess_image(image, target_size=(150, 150)):
 def predict(model, image, threshold=0.5):
     """Make a prediction using the model and return 'TB Positive' or 'Normal' based on the threshold."""
     predictions = model.predict(image)
-    
-    # Ensure the model output is in the expected shape
+
+    # Ensure the model outputs a valid probability value
     if predictions.shape == (1, 1):  # Assuming the model returns a single probability output
-        return 'TB Positive' if predictions[0][0] > threshold else 'Normal'  # Use the specified threshold
+        probability = predictions[0][0]
+        st.write(f'Prediction Probability: {probability:.4f}')  # Display the probability
+        return 'TB Positive' if probability > threshold else 'Normal'
     else:
         return 'Error: Invalid model output shape.'
 
@@ -40,7 +42,7 @@ st.title('PulmoScan AI')
 uploaded_file = st.file_uploader('Upload a Chest X-ray Image', type=['jpg', 'jpeg', 'png'])
 
 # Add a slider to adjust the threshold value
-threshold = st.slider('Select Prediction Threshold', min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+threshold = st.slider('Select Prediction Threshold', min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
 if uploaded_file is not None:
     # Display the uploaded image
