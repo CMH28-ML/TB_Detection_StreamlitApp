@@ -42,8 +42,8 @@ def predict(model, image, threshold=0.475):
 # Streamlit App Interface
 st.title('PulmoScan AI')
 
-# Define maximum file size (20 MB)
-MAX_FILE_SIZE_MB = 20
+# Define maximum file size (200 MB)
+MAX_FILE_SIZE_MB = 200
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
 
 # Allow the user to upload an image
@@ -51,7 +51,7 @@ uploaded_file = st.file_uploader('Upload a Chest X-ray Image', type=['jpg', 'jpe
 
 if uploaded_file is not None:
     # Get file size
-    file_size = uploaded_file.getvalue().__sizeof__()  # Get file size in bytes
+    file_size = len(uploaded_file.getvalue())  # Get file size in bytes
 
     if file_size > MAX_FILE_SIZE_BYTES:
         st.error(f"File size exceeds the {MAX_FILE_SIZE_MB} MB limit. Please upload a smaller file.")
@@ -63,7 +63,10 @@ if uploaded_file is not None:
         # Preprocess the uploaded image
         processed_image = preprocess_image(image)
 
+        # Add a slider to adjust the threshold value
+        threshold = st.slider('Select Prediction Threshold', min_value=0.0, max_value=1.0, value=0.475, step=0.01)
+
         # Predict button
         if st.button('Predict'):
-            prediction = predict(custom_model, processed_image)
+            prediction = predict(custom_model, processed_image, threshold)
             st.write(f'Prediction: {prediction}')
