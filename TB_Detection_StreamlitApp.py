@@ -27,6 +27,9 @@ def predict(model, image, threshold=0.5):
     """Make a prediction using the model and return 'TB Positive' or 'Normal' based on the threshold."""
     predictions = model.predict(image)
 
+    # Print raw predictions for debugging
+    st.write(f'Raw Predictions: {predictions}')  # Print raw prediction array
+
     # Ensure the model outputs a valid probability value
     if predictions.shape == (1, 1):  # Assuming the model returns a single probability output
         probability = predictions[0][0]
