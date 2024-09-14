@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import tensorflow as tf
+import io
 
 # Function to load the model from a local path
 @st.cache_resource
@@ -41,21 +42,29 @@ def predict(model, image, threshold=0.475):
 # Streamlit App Interface
 st.title('PulmoScan AI')
 
+# Define maximum file size (20 MB)
+MAX_FILE_SIZE_MB = 20
+MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
+
 # Allow the user to upload an image
 uploaded_file = st.file_uploader('Upload a Chest X-ray Image', type=['jpg', 'jpeg', 'png'])
 
-# Add a slider to adjust the threshold value
-threshold = st.slider('Select Prediction Threshold', min_value=0.0, max_value=1.0, value=0.5, step=0.01)
-
 if uploaded_file is not None:
-    # Display the uploaded image
-    image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded Chest X-ray', use_column_width=True)
-    
-    # Preprocess the uploaded image
-    processed_image = preprocess_image(image)
+    # Check file size
+    file_size = uploaded_file.seek(0, io.SEEK_END)  # Get file size in bytes
+    uploaded_file.seek(0)  # Reset file pointer to the beginning
+    if file_size > MAX_FILE_SIZE_BYTES:
+        st.error(f"File size exceeds the {MAX_FILE_SIZE_MB} MB limit. Please upload a smaller file.")
+    else:
+        # Display the uploaded image
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Chest X-ray', use_column_width=True)
+        
+        # Preprocess the uploaded image
+        processed_image = preprocess_image(image)
 
-    # Predict button
-    if st.button('Predict'):
-        prediction = predict(custom_model, processed_image, threshold)
-        st.write(f'Prediction: {prediction}')
+        # Predict button
+        if st.button('Predict'):
+            prediction = predict(custom_model, processed_image)
+            st.write(f'Prediction: {prediction}')
+
